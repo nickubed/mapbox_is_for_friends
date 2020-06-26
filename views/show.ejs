@@ -1,0 +1,43 @@
+<h2><%= match.place_name %></h2>
+<h4>At Longitude: </h4>
+<p id="long"><%= match.center[0] %></p>
+<h4>At Latitude: </h4>
+<p id="lat"><%= match.center[1] %></p>
+
+<div id="map">
+
+</div>
+<script>
+    mapboxgl.accessToken = '<%= mapkey %>'
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/satellite-v9',
+        center: ['<%= match.center[0] %>', '<%= match.center[1] %>'],
+        zoom: 12
+    })
+    var geojson = {
+        type: 'FeatureCollection',
+        features: [{
+            type: 'Feature',
+            geometry: {
+                type: 'Point',
+                coordinates: ['<%= match.center[0] %>', '<%= match.center[1] %>']
+            },
+            properties: {
+                title: 'Mapbox',
+                description: 'Mapbox element'
+            }
+        }]
+    }
+    geojson.features.forEach(marker => {
+        var el = document.createElement('img')
+        el.className = 'marker'
+        el.src = '/images/mapbox-icon.png'
+        el.style.width = '3vw'
+
+        new mapboxgl.Marker(el)
+        .setLngLat(marker.geometry.coordinates)
+        .addTo(map)
+    })
+
+</script>
